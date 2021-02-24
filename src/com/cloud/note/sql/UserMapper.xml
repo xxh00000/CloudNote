@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间,作用就是对sql进行分类化管理(sql隔离) -->
+<mapper namespace="com.cloud.note.dao.UserDao">
+	<insert id="save" parameterType="com.cloud.note.entity.User">
+	     insert into cn_user(cn_user_id,cn_user_name,cn_user_password,cn_user_token,cn_user_nick) 
+	     values(#{cn_user_id},#{cn_user_name},#{cn_user_password},#{cn_user_token},#{cn_user_nick})
+	</insert>
+	<select id="selectCountByName" parameterType="String" resultType="int">
+	select count(cn_user_id) from cn_user where cn_user_name = #{cn_user_name}
+	</select>
+	<select id="findByName" parameterType="String" resultType="com.cloud.note.entity.User">
+	select * from cn_user where cn_user_name=#{cn_user_name}
+	</select>
+	<update id="updatePassword" parameterType="String">
+	  update cn_user set cn_user_password=#{userPassword} where cn_user_id=#{userId}
+	</update>
+	<select id="selectPasswordByUserId" parameterType="String" resultType="String">
+	select cn_user_password from cn_user where cn_user_id=#{cn_user_id}
+	</select>
+</mapper>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="styles/login.css"/>
+<script type="text/javascript" src="scripts/jquery.min.js"></script>
+<script type="text/javascript" src="scripts/cookie_util.js"></script>
+<script type="text/javascript">
+$(function(){//页面加载完毕后执行该function
+	$("#regist_button").click(function(){//给注册按钮添加事件功能
+
+		//清除原有信息
+		$("#warning_1").hide();
+		$("#warning_2").hide();
+		$("#warning_3").hide();
+		
+		  var name=  $("#regist_username").val().trim();
+		  var password=$("#regist_password").val().trim();
+		  var final_password=$("#final_password").val().trim();
+		    var nick=$("#nickname").val().trim();
+		    //检测表单格式
+		    //检测账号是否为空
+		    var flag=true;
+		    if(name=="")
+			    {//若执行到if内部说明账号为空
+                    //给用户提示，账号不可为空
+                $("#warning_1").html("用户名不能为空!!");//给span进行赋值
+                $("#warning_1").show();//show()为显示，hide()为隐藏
+                flag=false;
+			    }
+ 		    if(nick=="")
+ 		    {
+	              alert("昵称不可为空");
+           flag=false;
+ 		    }
+		    if(password=="")
+		    {//若执行到if内部说明账号为空
+                //给用户提示，账号不可为空
+            $("#warning_2").html("密码不能为空!!");//给span进行赋值
+            $("#warning_2").show();//show()为显示，hide()为隐藏
+            flag=false;
+		    }
+		    if(password!=final_password)
+		    {
+             $("#warning_3").html("两次密码不一致!!");//给span进行赋值
+             $("#warning_3").show();//show()为显示，hide()为隐藏
+            flag=false;
+		    }
+// 		    if(final_password=="")
+// 		    {//若执行到if内部说明账号为空
+//                 //给用户提示，账号不可为空
+//             $("#warning_3").html("确认密码不能为空!!");//给span进行赋值
+//             $("#warning_3").show();//show()为显示，hide()为隐藏
+//             flag=false;
+// 		    }
+		    if(password!=final_password)
+			    {
+	             $("#warning_3").html("两次密码不一致!!");//给span进行赋值
+	             $("#warning_3").show();//show()为显示，hide()为隐藏
+                flag=false;
+			    }
+		    //TODO :     
+		    /*
+		    检验密码
+		    检验昵称
+		    确认密码和验证密码是否一致
+		    */
+		    
+//             alert(password);
+            //发送ajax请求
+            if(flag){//falg是我们判断表单格式的依据
+                $.ajax({
+                      url:"http://localhost:8080/SDAU_CloudNote/user/register.do",//路径
+                      type:"post",//请求方式
+                      data:{"name":name,"password":password,"nick":nick},//向后台传的数据
+                      dataType:"json",//解析饿的数据格式
+                      success:function(result){//若执行成功，可以执行该函数
+                           alert(result.msg);
+                           if(result.status==0)
+                               {
+                                $("#back").click();
+                               }      
+                           else
+                               {
+                               $("#waring_1 span").html(result.mag);
+                               $("#waring_1").show();
+                               }
+                          },
+                       error:function(){//若执行失败，可以执行该函数
+                       alert("注册失败");
+                           }                    
+                    });
+                }
+		});
+
+
+	
+})
+
+</script>
+<script type="text/javascript">
+$(function(){
+
+$("#login").click(function(){
+	$("#count_msg").hide();
+	$("#passwd_msg").hide();
+	  var flag1=true;
+	var username=$("#count").val().trim();
+	var password=$("#password").val().trim();
+	if(username=="")
+		{
+		//alert("用户名不可为空");
+		$("#count_msg").html("请输入用户名");
+		$("#count_msg").show();
+        flag1=false;
+		}
+  if(password=="")
+	  {
+		$("#passwd_msg").html("请输入密码");
+		$("#passwd_msg").show();
+    flag1=false;
+	  }
+	
+	 if(flag1){//falg是我们判断表单格式的依据
+	                $.ajax({
+	                      url:"http://localhost:8080/SDAU_CloudNote/user/login.do",//路径
+	                      type:"post",//请求方式
+	                      data:{"name":username,"password":password},//向后台传的数据
+	                      dataType:"json",//解析饿的数据格式
+	                      success:function(result){//若执行成功，可以执行该函数
+	                           alert(result.msg);
+	                           if(result.status==0)
+		                           {//登录成功
+                                    //获取登录者的id，存入Cookie
+                                    var userId=result.data;
+                                    alert(userId);
+                                    addCookie("uid",userId,2);//引入相关的js
+                                   window.location.href="edit.html";
+                                       
+		                           }
+	                           else if(result.status==1)
+		                           {
+                                  $("#count_msg").html(result.msg);
+                                  $("#count_msg").show();
+		                           }
+	                           else if(result.status==2)
+		                           {
+                                  $("#passwd_msg").html(result.msg);
+                                  $("#passwd_msg").show();
+		                           }
+	                          },
+	                       error:function(){//若执行失败，可以执行该函数
+	                       alert("登录失败");
+	                           }                    
+	                    });
+	                }
+});
+})
+
+
+</script>
+</head>
+	<body>
+		<div class="global">
+			<div class="log log_in" tabindex='-1' id='dl'>
+				<dl>
+					<dt>
+						<div class='header'>
+							<h3>登&nbsp;录</h3>
+						</div>
+					</dt>
+					<dt></dt>
+					<dt>
+						<div class='letter'>
+							用户名:&nbsp;<input type="text" name="" id="count" tabindex='1'/>
+					        <span id="count_msg" class="warning"></span>
+						</div>
+					</dt>
+					<dt>
+						<div class='letter'>
+							密&nbsp;&nbsp;&nbsp;码:&nbsp;<input type="password" name="" id="password" tabindex='2'/>
+					      <span id="passwd_msg" class="warning"></span>
+						</div>
+					</dt>
+					<dt>
+						<div>
+							<input type="button" name="" id="login" value='&nbsp登&nbsp录&nbsp' tabindex='3'/>
+							<input type="button" name="" id="sig_in" value='&nbsp注&nbsp册&nbsp' tabindex='4'/>
+						</div>
+					</dt>
+				</dl>
+			</div>
+			<div class="sig sig_out" tabindex='-1' id='zc' style='visibility:hidden;'>
+				<dl>
+					<dt>
+						<div class='header'>
+							<h3>注&nbsp;册</h3>
+						</div>
+					</dt>
+					<dt></dt>
+					<dt>
+						<div class='letter'>
+							用户名:&nbsp;<input type="text" name="" id="regist_username" tabindex='5'/>
+							<div class='warning' id='warning_1'><span>该用户名不可用</span></div>
+						</div>
+					</dt>
+					<dt>
+						<div class='letter'>
+							昵&nbsp;&nbsp;&nbsp;称:&nbsp;<input type="text" name="" id="nickname" tabindex='6'/>
+							<div class="waring" id="waring_4"><span></span></div>
+						</div>
+					</dt>
+					<dt>
+						<div class='letter'>
+							密&nbsp;&nbsp;&nbsp;码:&nbsp;<input type="password" name="" id="regist_password" tabindex='7'/>
+							<div class='warning' id='warning_2'><span>密码长度过短</span></div>
+						</div>
+					</dt>
+					<dt>
+						<div class='password'>
+							&nbsp;&nbsp;&nbsp;确认密码:&nbsp;<input type="password" name="" id="final_password" tabindex='8'/>
+							<div class='warning' id='warning_3'><span>密码输入不一致</span></div>
+						</div>
+					</dt>
+					<dt>
+						<div>
+							<input type="button" name="" id="regist_button" value='&nbsp注&nbsp册&nbsp' tabindex='9'/>
+							<input type="button" name="" id="back" value='&nbsp返&nbsp回&nbsp' tabindex='10'/>
+							<script type="text/javascript">
+							function get(e){
+								return document.getElementById(e);
+							}
+							get('sig_in').onclick=function(){
+								get('dl').className='log log_out';
+								get('zc').className='sig sig_in';
+							}
+							get('back').onclick=function(){
+								get('zc').className='sig sig_out';
+								get('dl').className='log log_in';
+							}
+							window.onload=function(){
+								var t =setTimeout("get('zc').style.visibility='visible'",800);
+								get('final_password').onblur=function(){
+									var npassword=get('regist_password').value;
+									var fpassword=get('final_password').value;
+									if(npassword!=fpassword){
+										get('warning_3').style.display='block';
+									}
+								}
+								get('regist_password').onblur=function(){
+									var npassword=get('regist_password').value.length;
+									if(npassword<6&&npassword>0){
+										get('warning_2').style.display='block';
+									}
+								}
+								get('regist_password').onfocus=function(){
+									get('warning_2').style.display='none';
+								}
+								get('final_password').onfocus=function(){
+									get('warning_3').style.display='none';
+								}
+							}
+							</script>
+						</div>
+					</dt>
+				</dl>
+			</div>
+		</div>
+	</body>
+</html>

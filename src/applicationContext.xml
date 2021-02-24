@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"  
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+      <!-- 在mybatis-spring (5,-1) -->
+      <!-- 这里不需要写id -->
+      <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+      <!-- 需要定制dao接口 setBasePackage() -->
+           <property name="basePackage" value="com.cloud.note.dao"></property>
+      <!-- 需要SqlSession对象，框架智能性，不用ref注入，也会自动注入 -->
+               
+      </bean>
+      <!-- 获取SqlSessionFactory mybatis-spring(1,3) -->
+      <bean id="ssf" class="org.mybatis.spring.SqlSessionFactoryBean">
+      <!-- 指定数据库连接参数 -->
+      <property name="dataSource" ref="dbcp"></property>
+      <!-- 指定配置映射文件 -->
+      <property name="mapperLocations" value="classpath:com/cloud/note/sql/*.xml"></property>
+      </bean>
+      <!-- 数据库连接池 commons-dbcp(1,4)-->
+      <bean id="dbcp" class="org.apache.commons.dbcp.BasicDataSource">
+      <property name="username" value="root"></property>
+      <property name="password" value="123456"></property>
+      <property name="url" value="jdbc:mysql://localhost:3306/cloud_note?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false"></property>
+      <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+      </bean>
+
+
+<!-- 配置handlerMapping 通过注解的方式配置 通过注解可以代替@RequestMapping -->
+<!--   开启注解扫描 -->
+  <context:component-scan base-package="com.cloud.note"></context:component-scan>
+<!--   开启驱动 -->
+<mvc:annotation-driven></mvc:annotation-driven>
+<!--       配置ViewReslver -->
+<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> -->
+<!-- <property name="prefix" value="/"></property> -->
+<!-- <property name="suffix" value=".html"></property> -->
+<!-- </bean> -->
+
+</beans>
+
+
+
+
+
